@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: httpserver
+  name: httpserver
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: httpserver
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "80"
+      labels:
+        app: httpserver
+    spec:
+      #      affinity:
+      #        podAntiAffinity:
+      #          requiredDuringSchedulingIgnoredDuringExecution:
+      #            - labelSelector:
+      #                matchExpressions:
+      #                  - key: app
+      #                    operator: In
+      #                    values:
+      #                      - httpserver
+      #              topologyKey: kubernetes.io/hostname
+      containers:
+        - name: httpserver
+          image: sunzhenreg/golang-http:v4.0
+          imagePullPolicy: IfNotPresent
+          args :
+            - -log_dir=/tmp/logs
+            - -v=4
+            - -alsologtostderr
+          envFrom:
+            - configMapRef:
+                name: httpserver-config
+          ports:
+            - containerPort: 80
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/sh", "-c", "echo Hello from the preStop handler"]
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+            initialDelaySeconds: 10
+            failureThreshold: 10
+            periodSeconds: 10
+          resources:
+            limits:
+              memory: 512Mi
+              cpu: 200m
+            requests:
+              memory: 256Mi
+              cpu: 100m
+          volumeMounts:
+            - mountPath: /etc/localtime
+              name: localtime
+            - mountPath: /tmp/logs
+              name: log-volume
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - hostPath:
+            path: /etc/localtime
+            type: ''
+          name: localtime
+        - name: log-volume
+          emptyDir: {}

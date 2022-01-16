@@ -1,0 +1,33 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: demo
+spec:
+  gateways:
+    - demo
+  hosts:
+    - '*'
+  http:
+    - match:
+        - uri:
+            exact: /hello
+      route:
+        - destination:
+            host: demo
+            port:
+              number: 80
+---
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: demo
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - hosts:
+        - 'demo.cncv.vip'
+      port:
+        name: http-demo
+        number: 80
+        protocol: HTTP

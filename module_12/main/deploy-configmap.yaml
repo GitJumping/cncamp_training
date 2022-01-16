@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: default
+  name: httpserver-config
+data:
+  version: 'v2.0'
+  SERVER_ADDR: "0.0.0.0"
+  SERVER_PORT: "80"

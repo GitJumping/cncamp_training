@@ -1,0 +1,214 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo
+  labels:
+    app: demo
+  namespace: istio-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: demo
+  template:
+    metadata:
+      labels:
+        app: demo
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+    spec:
+      containers:
+        - name: httpserver
+          image: jikebang/httpserver:3.0.1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              scheme: HTTP
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          securityContext:
+            runAsUser: 1000
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          env:
+            - name: VERSION
+              value: "3.0.1"
+            - name: CALL_NAME
+              value: "demo1"
+          volumeMounts:
+            - name: app
+              mountPath: /app/app.json
+              subPath: app.json
+      volumes:
+        - name: app
+          configMap:
+            name: httpserver
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo
+  labels:
+    app: demo
+    service: demo
+  namespace: istio-demo
+spec:
+  ports:
+    - port: 80
+      targetPort: 8080
+      name: http
+  selector:
+    app: demo
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: httpserver
+  namespace: istio-demo
+data:
+  app.json: |
+    {"name":"我是一个配置名称"}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo1
+  labels:
+    app: demo1
+  namespace: istio-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: demo1
+  template:
+    metadata:
+      labels:
+        app: demo1
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+    spec:
+      containers:
+        - name: httpserver
+          image: jikebang/httpserver:3.0.1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              scheme: HTTP
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          securityContext:
+            runAsUser: 1000
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          env:
+            - name: VERSION
+              value: "3.0.1"
+            - name: CALL_NAME
+              value: "demo2"
+          volumeMounts:
+            - name: app
+              mountPath: /app/app.json
+              subPath: app.json
+      volumes:
+        - name: app
+          configMap:
+            name: httpserver
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo1
+  labels:
+    app: demo1
+    service: demo1
+  namespace: istio-demo
+spec:
+  ports:
+    - port: 80
+      targetPort: 8080
+      name: http
+  selector:
+    app: demo1
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo2
+  labels:
+    app: demo2
+  namespace: istio-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: demo2
+  template:
+    metadata:
+      labels:
+        app: demo2
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+    spec:
+      containers:
+        - name: httpserver
+          image: jikebang/httpserver:3.0.1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              scheme: HTTP
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          securityContext:
+            runAsUser: 1000
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          env:
+            - name: VERSION
+              value: "3.0.1"
+          volumeMounts:
+            - name: app
+              mountPath: /app/app.json
+              subPath: app.json
+      volumes:
+        - name: app
+          configMap:
+            name: httpserver
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo2
+  namespace: istio-demo
+  labels:
+    app: demo2
+    service: demo2
+spec:
+  ports:
+    - port: 80
+      targetPort: 8080
+      name: http
+  selector:
+    app: demo2
