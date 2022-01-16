@@ -1,12 +1,12 @@
 # cncamp-training
 go-base-to-cloud
 
-# Week1
+# Week_1(Module_2)
 实现了一小点功能。。
 见  [代码main.go](https://github.com/GitJumping/cncamp_training/week_1/main/main.go)
 
-# Module2
-实现功能见 [代码](https://github.com/GitJumping/cncamp_training/module_2/main)
+# Module_3
+实现功能见 [代码](https://github.com/GitJumping/cncamp_training/module_3/main)
 
 # Module_8
 代码见 [代码main.go](https://github.com/GitJumping/cncamp_training/module_8/main/main.go)

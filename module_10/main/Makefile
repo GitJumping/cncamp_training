@@ -7,11 +7,11 @@
 #
 #release: build
 #	echo "building main container"
-#	docker build -t module_2/main:${tag} .
+#	docker build -t module_3/main:${tag} .
 #
 #push: release
-#	echo "pushing module_2/main"
-#	docker push module_2/main:${tag}
+#	echo "pushing module_3/main"
+#	docker push module_3/main:${tag}
 
 export tag=v4.0
 build:

@@ -1,6 +1,6 @@
 # Binaries for programs and plugins
 httpserver
-./module_2/main/bin
+module_3/main/bin
 *.exe
 *.exe~
 *.dll
