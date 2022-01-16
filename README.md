@@ -47,4 +47,3 @@ kubectl apply -f istio-specs.yaml
 k get svc -nistio-system
 curl -H "Host: demo.cncv.vip" 10.108.82.159/hello -v
 ```
-

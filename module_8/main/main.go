@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/golang/glog"
+
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"http01/metrics"
 	"math/rand"

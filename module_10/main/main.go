@@ -4,6 +4,9 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"github.com/cncamps/httpserver/metrics"
+	"github.com/golang/glog"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"io"
 	"math/rand"
 	"net/http"
@@ -12,11 +15,6 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
-
-	"github.com/golang/glog"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
-
-	"github.com/cncamps/httpserver/metrics"
 )
 
 func main() {
